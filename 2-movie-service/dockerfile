@@ -2,16 +2,12 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package.json .
+COPY package*.json ./
 
 RUN npm install
 
 COPY . .
 
 EXPOSE 3002
-# TODO: sesuaikan port tiap service
-# user-service   → 3001
-# movie-service  → 3002
-# review-service → 3003
 
 CMD ["node", "server.js"]
