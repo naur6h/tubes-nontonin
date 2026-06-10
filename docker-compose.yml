@@ -1,29 +1,13 @@
-version: '3.8'
-
 services:
-  movie-service:
-    build: ./2-movie-service
-    ports:
-      - "3002:3002"
-    environment:
-      DB_HOST: mysql-db
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_NAME: nontonin_movies
-      PORT: 3002
-    depends_on:
-      mysql-db:
-        condition: service_healthy
-    restart: on-failure
 
   mysql-db:
     image: mysql:8.0
+    container_name: nontonin-mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: nontonin_movies
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -32,6 +16,57 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  user-service:
+    build: ./1-user-service
+    container_name: nontonin-user-service
+    restart: on-failure
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: nontonin
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  movie-service:
+    build: ./2-movie-service
+    container_name: nontonin-movie-service
+    restart: on-failure
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: nontonin_movies
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+
+  review-service:
+    build: ./3-review-service
+    container_name: nontonin-review-service
+    restart: on-failure
+    ports:
+      - "3003:3003"
+    environment:
+      PORT: 3003
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: nontonin_review
+    depends_on:
+      mysql-db:
+        condition: service_healthy
 
 volumes:
   mysql_data:
