@@ -1,30 +1,21 @@
-require('dotenv').config();
 const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const cors = require('cors');
-
-// TODO: import schema GraphQL movie (schema.js)
-// const schema = require('./schema');
-
-// TODO: import koneksi database (db.js)
-// const db = require('./db');
+const { schema, root } = require('./schema');
+require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 3002;
+
 app.use(cors());
 app.use(express.json());
 
 app.use('/graphql', graphqlHTTP({
-  // TODO: ganti dengan schema asli
-  schema: null,
+  schema: schema,
+  rootValue: root,
   graphiql: true,
 }));
 
-app.get('/health', (req, res) => {
-  res.json({ service: 'movie-service', status: 'ok' });
-});
-
-const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => {
-  console.log(`Movie Service running on port ${PORT}`);
-  console.log(`GraphQL: http://localhost:${PORT}/graphql`);
+  console.log(`Movie service running at http://localhost:${PORT}/graphql`);
 });
