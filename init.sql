@@ -1,3 +1,13 @@
+CREATE DATABASE IF NOT EXISTS nontonin;
+USE nontonin;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL
+);
+
 CREATE DATABASE IF NOT EXISTS nontonin_movies;
 USE nontonin_movies;
 
@@ -9,5 +19,17 @@ CREATE TABLE IF NOT EXISTS movies (
   release_year INT,
   director VARCHAR(255),
   poster_url VARCHAR(500),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE DATABASE IF NOT EXISTS nontonin_review;
+USE nontonin_review;
+
+CREATE TABLE IF NOT EXISTS review (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  movie_id INT NOT NULL,
+  rating INT NOT NULL,
+  review_text TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
