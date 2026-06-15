@@ -1,15 +1,697 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Nontonin — ... Service</title>
-  <!-- TODO: ganti judul sesuai service -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nontonin — Users</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink-50: #FDF0F5;
+      --pink-100: #FCE4ED;
+      --pink-200: #F4B8CC;
+      --pink-400: #E8859F;
+      --pink-600: #C95A7A;
+      --pink-800: #8B2F4E;
+      --gray-50: #F9F6F7;
+      --gray-100: #F0EBEE;
+      --gray-300: #D5C8CE;
+      --gray-500: #9C8D93;
+      --gray-700: #5C4F55;
+      --gray-900: #2C2028;
+      --white: #ffffff;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 210px 1fr 270px;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--pink-200);
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 28px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--pink-400);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+
+    .logo-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--pink-600);
+    }
+
+    .nav-section {
+      padding: 0 12px 20px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pink-200);
+      padding: 0 8px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 2px;
+      text-decoration: none;
+    }
+
+    .nav-item:hover { background: var(--pink-50); color: var(--pink-600); }
+    .nav-item.active { background: var(--pink-100); color: var(--pink-600); font-weight: 500; }
+    .nav-item i { font-size: 17px; }
+
+    /* ── MAIN ── */
+    .main {
+      padding: 28px 28px 48px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .page-title { font-size: 20px; font-weight: 600; }
+    .page-sub { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+
+    /* featured / stats card */
+    .featured {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--pink-200);
+      padding: 28px;
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: 1fr 140px;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--pink-100);
+      color: var(--pink-600);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .featured-title {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .featured-meta {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-bottom: 10px;
+    }
+
+    .featured-desc {
+      font-size: 13px;
+      color: var(--gray-700);
+      line-height: 1.7;
+    }
+
+    .featured-poster {
+      width: 140px;
+      height: 140px;
+      border-radius: var(--radius-md);
+      background: var(--pink-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pink-400);
+      font-size: 44px;
+    }
+
+    /* user table section */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title { font-size: 15px; font-weight: 600; }
+
+    .movie-count {
+      font-size: 12px;
+      color: var(--gray-500);
+      background: var(--gray-100);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .table-wrap {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--pink-100);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: var(--pink-50);
+      color: var(--pink-600);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--pink-100);
+    }
+
+    tbody td {
+      padding: 12px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--pink-50);
+      color: var(--gray-700);
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--pink-50); }
+
+    .id-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      height: 22px;
+      padding: 0 6px;
+      background: var(--pink-100);
+      color: var(--pink-600);
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gray-500);
+    }
+
+    .empty-state i { font-size: 40px; display: block; margin-bottom: 10px; color: var(--pink-200); }
+    .empty-state p { font-size: 14px; }
+
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--pink-100);
+      color: var(--pink-600);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-refresh:hover { background: var(--pink-200); }
+
+    /* ── RIGHT SIDEBAR ── */
+    .rightbar {
+      background: var(--white);
+      border-left: 1px solid var(--pink-200);
+      padding: 28px 20px;
+      overflow-y: auto;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 28px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 36px 10px 14px;
+      border: 1px solid var(--pink-200);
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      background: var(--pink-50);
+      color: var(--gray-900);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-wrap input:focus { border-color: var(--pink-400); background: var(--white); }
+    .search-wrap i { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--pink-400); font-size: 16px; pointer-events: none; }
+
+    .form-box {
+      background: var(--pink-50);
+      border: 1px solid var(--pink-100);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .form-heading {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--pink-600);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--pink-200);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--gray-900);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-group input:focus { border-color: var(--pink-400); }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--pink-400);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 11px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-submit:hover { background: var(--pink-600); }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .toast {
+      margin-top: 12px;
+      font-size: 12px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    .toast.success { display: block; background: #E8F5E9; color: #2E7D32; }
+    .toast.error { display: block; background: #FFEBEE; color: #C62828; }
+  </style>
 </head>
 <body>
-  <h1>🎬 Nontonin</h1>
-  <h2>... Service</h2>
-  <!-- TODO: ganti sesuai service -->
-  <p>Service is running.</p>
-  <a href="/graphql">Open GraphQL Playground</a>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-movie"></i></div>
+      <span class="logo-name">Nontonin</span>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Menu</div>
+      <a class="nav-item" href="../2-movie-service/index.html"><i class="ti ti-home"></i> Discover</a>
+      <a class="nav-item" href="#"><i class="ti ti-trending-up"></i> Trending</a>
+      <a class="nav-item" href="#"><i class="ti ti-category"></i> Genre</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Services</div>
+      <a class="nav-item active" href="../1-user-service/index.html"><i class="ti ti-user"></i> Users</a>
+      <a class="nav-item" href="../2-movie-service/index.html"><i class="ti ti-movie"></i> Movies</a>
+      <a class="nav-item" href="../3-review-service/index.html"><i class="ti ti-star"></i> Reviews</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Users</div>
+        <div class="page-sub">Manage registered Nontonin accounts</div>
+      </div>
+    </div>
+
+    <!-- Featured / summary -->
+    <div class="featured" id="featured-card">
+      <div>
+        <div class="featured-badge"><i class="ti ti-server" style="font-size:11px;"></i> User Service</div>
+        <div class="featured-title" id="feat-title">Connecting...</div>
+        <div class="featured-meta" id="feat-meta"></div>
+        <div class="featured-desc" id="feat-desc">Fetching users from user-service...</div>
+      </div>
+      <div class="featured-poster"><i class="ti ti-users"></i></div>
+    </div>
+
+    <!-- Table -->
+    <div class="section-header">
+      <span class="section-title">All Users</span>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span class="movie-count" id="user-count">0 users</span>
+        <button class="btn-refresh" onclick="loadUsers()"><i class="ti ti-refresh"></i> Refresh</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody id="userTable">
+          <tr>
+            <td colspan="3">
+              <div class="empty-state">
+                <i class="ti ti-loader"></i>
+                <p>Loading users...</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- RIGHT BAR -->
+  <aside class="rightbar">
+    <div class="search-wrap">
+      <input type="text" placeholder="Search users..." id="search-input" oninput="filterUsers()" />
+      <i class="ti ti-search"></i>
+    </div>
+
+    <!-- Add User -->
+    <div class="form-box">
+      <div class="form-heading"><i class="ti ti-user-plus"></i> Add User</div>
+
+      <div class="form-group">
+        <label>Username *</label>
+        <input type="text" id="username" placeholder="e.g. johndoe" />
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" id="email" placeholder="e.g. john@mail.com" />
+      </div>
+      <div class="form-group">
+        <label>Password *</label>
+        <input type="password" id="password" placeholder="••••••••" />
+      </div>
+
+      <button class="btn-submit" onclick="addUser()">Add User</button>
+      <div class="toast" id="addMessage"></div>
+    </div>
+
+    <!-- Update User -->
+    <div class="form-box">
+      <div class="form-heading"><i class="ti ti-edit"></i> Update User</div>
+
+      <div class="form-group">
+        <label>User ID *</label>
+        <input type="number" id="updateId" placeholder="e.g. 1" />
+      </div>
+      <div class="form-group">
+        <label>New Username</label>
+        <input type="text" id="updateUsername" placeholder="New username" />
+      </div>
+      <div class="form-group">
+        <label>New Email</label>
+        <input type="email" id="updateEmail" placeholder="New email" />
+      </div>
+
+      <button class="btn-submit" onclick="updateUser()">Update User</button>
+      <div class="toast" id="updateMessage"></div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  const URL = "http://localhost:3001/graphql";
+  let allUsers = [];
+
+  async function gql(query, variables = {}) {
+    const res = await fetch(URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, variables })
+    });
+    return res.json();
+  }
+
+  // ============================
+  // LOAD ALL USERS
+  // ============================
+  async function loadUsers() {
+    try {
+      const result = await gql(`
+        query {
+          users {
+            id
+            username
+            email
+          }
+        }
+      `);
+
+      allUsers = result.data?.users || [];
+      renderUsers(allUsers);
+
+      if (allUsers.length > 0) {
+        setFeatured();
+      } else {
+        document.getElementById('feat-title').textContent = 'No users yet';
+        document.getElementById('feat-meta').textContent = '';
+        document.getElementById('feat-desc').textContent = 'Add the first user using the form on the right.';
+      }
+    } catch (e) {
+      document.getElementById('feat-title').textContent = 'Service offline';
+      document.getElementById('feat-meta').textContent = '';
+      document.getElementById('feat-desc').textContent = 'Make sure user-service is running at localhost:3001';
+      document.getElementById('userTable').innerHTML = `
+        <tr>
+          <td colspan="3">
+            <div class="empty-state">
+              <i class="ti ti-wifi-off"></i>
+              <p>Could not connect to user-service</p>
+            </div>
+          </td>
+        </tr>`;
+    }
+  }
+
+  function setFeatured() {
+    document.getElementById('feat-title').textContent = allUsers.length + ' Registered User' + (allUsers.length !== 1 ? 's' : '');
+    document.getElementById('feat-meta').textContent = 'user-service · localhost:3001';
+    document.getElementById('feat-desc').textContent = 'Browse, add, and update user accounts for the Nontonin platform.';
+  }
+
+  function renderUsers(users) {
+    const table = document.getElementById('userTable');
+    document.getElementById('user-count').textContent = users.length + ' user' + (users.length !== 1 ? 's' : '');
+
+    if (users.length === 0) {
+      table.innerHTML = `
+        <tr>
+          <td colspan="3">
+            <div class="empty-state">
+              <i class="ti ti-database-off"></i>
+              <p>No users found</p>
+            </div>
+          </td>
+        </tr>`;
+      return;
+    }
+
+    table.innerHTML = users.map(user => `
+      <tr>
+        <td><span class="id-badge">${user.id}</span></td>
+        <td>${user.username}</td>
+        <td>${user.email}</td>
+      </tr>
+    `).join('');
+  }
+
+  function filterUsers() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const filtered = allUsers.filter(u =>
+      u.username.toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q)
+    );
+    renderUsers(filtered);
+  }
+
+  // ============================
+  // ADD USER
+  // ============================
+  async function addUser() {
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!username || !email || !password) {
+      showToast('addMessage', 'Username, email, and password are required!', 'error');
+      return;
+    }
+
+    try {
+      const result = await gql(`
+        mutation($username:String!, $email:String!, $password:String!) {
+          addUser(username:$username, email:$email, password:$password) {
+            id
+            username
+          }
+        }
+      `, { username, email, password });
+
+      if (result.errors) {
+        showToast('addMessage', result.errors[0].message, 'error');
+        return;
+      }
+
+      showToast('addMessage', 'User added! ID: ' + result.data.addUser.id, 'success');
+
+      ['username','email','password'].forEach(id => document.getElementById(id).value = '');
+      loadUsers();
+    } catch (e) {
+      showToast('addMessage', 'Failed to connect to service.', 'error');
+    }
+  }
+
+  // ============================
+  // UPDATE USER
+  // ============================
+  async function updateUser() {
+    const id = document.getElementById("updateId").value;
+    const username = document.getElementById("updateUsername").value.trim();
+    const email = document.getElementById("updateEmail").value.trim();
+
+    if (!id) {
+      showToast('updateMessage', 'User ID is required!', 'error');
+      return;
+    }
+
+    try {
+      const existing = allUsers.find(u => String(u.id) === String(id));
+      const finalUsername = username || existing?.username || '';
+      const finalEmail = email || existing?.email || '';
+
+      const result = await gql(`
+        mutation($id:Int!, $username:String, $email:String) {
+          updateUser(id:$id, username:$username, email:$email) {
+            id
+            username
+            email
+          }
+        }
+      `, { id: parseInt(id), username: finalUsername, email: finalEmail });
+
+      if (result.errors) {
+        showToast('updateMessage', result.errors[0].message, 'error');
+        return;
+      }
+
+      showToast('updateMessage', 'User updated!', 'success');
+
+      ['updateId','updateUsername','updateEmail'].forEach(id => document.getElementById(id).value = '');
+      loadUsers();
+    } catch (e) {
+      showToast('updateMessage', 'Failed to connect to service.', 'error');
+    }
+  }
+
+  function showToast(elId, msg, type) {
+    const el = document.getElementById(elId);
+    el.textContent = msg;
+    el.className = 'toast ' + type;
+    setTimeout(() => el.className = 'toast', 3000);
+  }
+
+  loadUsers();
+</script>
+
 </body>
 </html>
