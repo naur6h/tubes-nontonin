@@ -9,9 +9,5 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 EXPOSE 3003
-# TODO: sesuaikan port tiap service
-# user-service   → 3001
-# movie-service  → 3002
-# review-service → 3003
 
 CMD ["node", "server.js"]
