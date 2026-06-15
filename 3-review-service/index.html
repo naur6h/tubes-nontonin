@@ -1,15 +1,937 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Nontonin — ... Service</title>
-  <!-- TODO: ganti judul sesuai service -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nontonin — Reviews</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink-50: #FDF0F5;
+      --pink-100: #FCE4ED;
+      --pink-200: #F4B8CC;
+      --pink-400: #E8859F;
+      --pink-600: #C95A7A;
+      --pink-800: #8B2F4E;
+      --gray-50: #F9F6F7;
+      --gray-100: #F0EBEE;
+      --gray-300: #D5C8CE;
+      --gray-500: #9C8D93;
+      --gray-700: #5C4F55;
+      --gray-900: #2C2028;
+      --white: #ffffff;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 210px 1fr 270px;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--pink-200);
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 28px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--pink-400);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+    }
+
+    .logo-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--pink-600);
+    }
+
+    .nav-section {
+      padding: 0 12px 20px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--pink-200);
+      padding: 0 8px 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-bottom: 2px;
+      text-decoration: none;
+    }
+
+    .nav-item:hover { background: var(--pink-50); color: var(--pink-600); }
+    .nav-item.active { background: var(--pink-100); color: var(--pink-600); font-weight: 500; }
+    .nav-item i { font-size: 17px; }
+
+    /* ── MAIN ── */
+    .main {
+      padding: 28px 28px 48px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .page-title { font-size: 20px; font-weight: 600; }
+    .page-sub { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+
+    /* ── FEATURED REVIEW ── */
+    .featured {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--pink-200);
+      padding: 28px;
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--pink-100);
+      color: var(--pink-600);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .featured-title {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .featured-meta {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-bottom: 10px;
+    }
+
+    .featured-text {
+      font-size: 13px;
+      color: var(--gray-700);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .featured-stars {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      min-width: 72px;
+    }
+
+    .star-big {
+      font-size: 40px;
+      color: var(--pink-400);
+      line-height: 1;
+    }
+
+    .star-num {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--gray-900);
+      line-height: 1;
+    }
+
+    .star-label {
+      font-size: 11px;
+      color: var(--gray-500);
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border: 1px solid var(--pink-100);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--pink-50);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pink-400);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .stat-value { font-size: 20px; font-weight: 600; }
+    .stat-label { font-size: 11px; color: var(--gray-500); margin-top: 1px; }
+
+    /* ── SECTION ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .section-title { font-size: 15px; font-weight: 600; }
+
+    .review-count {
+      font-size: 12px;
+      color: var(--gray-500);
+      background: var(--gray-100);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    /* ── REVIEW LIST ── */
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .review-card {
+      background: var(--white);
+      border: 1px solid var(--pink-100);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      transition: border-color 0.15s, transform 0.15s;
+      cursor: pointer;
+    }
+
+    .review-card:hover { border-color: var(--pink-400); transform: translateX(3px); }
+    .review-card.editing { border-color: var(--pink-600); background: var(--pink-50); }
+
+    .review-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      gap: 12px;
+    }
+
+    .review-ids {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .id-chip {
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--pink-100);
+      color: var(--pink-600);
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .review-actions {
+      display: flex;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      color: var(--gray-300);
+      transition: all 0.15s;
+    }
+
+    .action-btn.edit:hover { color: var(--pink-600); background: var(--pink-100); }
+    .action-btn.delete:hover { color: #E24B4A; background: #FFEBEE; }
+
+    .stars-row {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-bottom: 6px;
+    }
+
+    .star { font-size: 14px; }
+    .star.filled { color: var(--pink-400); }
+    .star.empty { color: var(--gray-300); }
+
+    .review-text-preview {
+      font-size: 13px;
+      color: var(--gray-700);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* inline edit */
+    .inline-edit { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--pink-200); }
+    .inline-edit.open { display: block; }
+
+    .inline-edit label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .inline-edit input,
+    .inline-edit textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--pink-200);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--gray-900);
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .inline-edit input:focus,
+    .inline-edit textarea:focus { border-color: var(--pink-400); }
+
+    .inline-edit textarea { resize: vertical; min-height: 64px; line-height: 1.5; }
+
+    .inline-btns { display: flex; gap: 8px; }
+
+    .btn-save {
+      background: var(--pink-400);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-save:hover { background: var(--pink-600); }
+
+    .btn-cancel {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+    }
+
+    .btn-cancel:hover { background: var(--gray-300); }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--gray-500);
+    }
+
+    .empty-state i { font-size: 40px; display: block; margin-bottom: 10px; color: var(--pink-200); }
+    .empty-state p { font-size: 14px; }
+
+    /* ── RIGHT SIDEBAR ── */
+    .rightbar {
+      background: var(--white);
+      border-left: 1px solid var(--pink-200);
+      padding: 28px 20px;
+      overflow-y: auto;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 28px;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 36px 10px 14px;
+      border: 1px solid var(--pink-200);
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      background: var(--pink-50);
+      color: var(--gray-900);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-wrap input:focus { border-color: var(--pink-400); background: var(--white); }
+    .search-wrap i { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--pink-400); font-size: 16px; pointer-events: none; }
+
+    .form-box {
+      background: var(--pink-50);
+      border: 1px solid var(--pink-100);
+      border-radius: var(--radius-md);
+      padding: 18px;
+    }
+
+    .form-heading {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--pink-600);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--pink-200);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--gray-900);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--pink-400); }
+
+    .form-group textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+
+    /* star picker */
+    .star-picker {
+      display: flex;
+      gap: 6px;
+      padding: 4px 0;
+    }
+
+    .star-pick {
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--gray-300);
+      transition: color 0.1s, transform 0.1s;
+      line-height: 1;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .star-pick:hover,
+    .star-pick.on { color: var(--pink-400); }
+    .star-pick:hover { transform: scale(1.15); }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--pink-400);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 11px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.15s;
+    }
+
+    .btn-submit:hover { background: var(--pink-600); }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .toast {
+      margin-top: 12px;
+      font-size: 12px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      display: none;
+    }
+
+    .toast.success { display: block; background: #E8F5E9; color: #2E7D32; }
+    .toast.error { display: block; background: #FFEBEE; color: #C62828; }
+  </style>
 </head>
 <body>
-  <h1>🎬 Nontonin</h1>
-  <h2>... Service</h2>
-  <!-- TODO: ganti sesuai service -->
-  <p>Service is running.</p>
-  <a href="/graphql">Open GraphQL Playground</a>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon"><i class="ti ti-movie"></i></div>
+      <span class="logo-name">Nontonin</span>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Menu</div>
+      <a class="nav-item" href="../index.html"><i class="ti ti-home"></i> Discover</a>
+      <a class="nav-item" href="#"><i class="ti ti-trending-up"></i> Trending</a>
+      <a class="nav-item" href="#"><i class="ti ti-category"></i> Genre</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Services</div>
+      <a class="nav-item" href="../1-user-service/index.html"><i class="ti ti-user"></i> Users</a>
+      <a class="nav-item" href="../2-movie-service/index.html"><i class="ti ti-movie"></i> Movies</a>
+      <a class="nav-item active" href="../3-review-service/index.html"><i class="ti ti-star"></i> Reviews</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Reviews</div>
+        <div class="page-sub">Browse and manage movie reviews</div>
+      </div>
+    </div>
+
+    <!-- Featured Review -->
+    <div class="featured" id="featured-card">
+      <div>
+        <div class="featured-badge"><i class="ti ti-star-filled" style="font-size:11px;"></i> Latest Review</div>
+        <div class="featured-title" id="feat-title">Connecting...</div>
+        <div class="featured-meta" id="feat-meta"></div>
+        <div class="featured-text" id="feat-text">Fetching reviews from review-service...</div>
+      </div>
+      <div class="featured-stars">
+        <i class="ti ti-star-filled star-big"></i>
+        <span class="star-num" id="feat-rating">—</span>
+        <span class="star-label">/ 5</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon"><i class="ti ti-messages"></i></div>
+        <div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total Reviews</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="ti ti-star"></i></div>
+        <div>
+          <div class="stat-value" id="stat-avg">—</div>
+          <div class="stat-label">Avg. Rating</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><i class="ti ti-award"></i></div>
+        <div>
+          <div class="stat-value" id="stat-top">—</div>
+          <div class="stat-label">Top Rated</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="section-header">
+      <span class="section-title">All Reviews</span>
+      <span class="review-count" id="review-count">0 reviews</span>
+    </div>
+    <div class="review-list" id="review-list">
+      <div class="empty-state">
+        <i class="ti ti-loader"></i>
+        <p>Loading reviews...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- RIGHT BAR -->
+  <aside class="rightbar">
+    <div class="search-wrap">
+      <input type="text" placeholder="Search by user ID..." id="search-input" oninput="filterReviews()" />
+      <i class="ti ti-search"></i>
+    </div>
+
+    <div class="form-box">
+      <div class="form-heading"><i class="ti ti-plus"></i> Add Review</div>
+
+      <div class="form-group">
+        <label>User ID *</label>
+        <input type="number" id="f-userid" placeholder="e.g. 1" min="1" />
+      </div>
+      <div class="form-group">
+        <label>Movie ID *</label>
+        <input type="number" id="f-movieid" placeholder="e.g. 5" min="1" />
+      </div>
+      <div class="form-group">
+        <label>Rating *</label>
+        <div class="star-picker" id="star-picker">
+          <button class="star-pick" data-val="1" onclick="pickStar(1)">★</button>
+          <button class="star-pick" data-val="2" onclick="pickStar(2)">★</button>
+          <button class="star-pick" data-val="3" onclick="pickStar(3)">★</button>
+          <button class="star-pick" data-val="4" onclick="pickStar(4)">★</button>
+          <button class="star-pick" data-val="5" onclick="pickStar(5)">★</button>
+        </div>
+        <input type="hidden" id="f-rating" value="" />
+      </div>
+      <div class="form-group">
+        <label>Review Text *</label>
+        <textarea id="f-text" placeholder="Write your review..."></textarea>
+      </div>
+
+      <button class="btn-submit" onclick="addReview()">Add Review</button>
+      <div class="toast" id="toast"></div>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  const GQL = 'http://localhost:3003/graphql';
+  let allReviews = [];
+  let selectedRating = 0;
+
+  async function gql(query, variables = {}) {
+    const res = await fetch(GQL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, variables })
+    });
+    return res.json();
+  }
+
+  async function loadReviews() {
+    try {
+      const data = await gql(`{
+        getReview {
+          id userId movieId rating reviewText
+        }
+      }`);
+      allReviews = data.data?.getReview || [];
+      renderReviews(allReviews);
+      updateStats(allReviews);
+      if (allReviews.length > 0) setFeatured(allReviews[0]);
+      else {
+        document.getElementById('feat-title').textContent = 'No reviews yet';
+        document.getElementById('feat-text').textContent = 'Add the first review using the form on the right.';
+        document.getElementById('feat-rating').textContent = '—';
+      }
+    } catch (e) {
+      document.getElementById('feat-title').textContent = 'Service offline';
+      document.getElementById('feat-text').textContent = 'Make sure review-service is running at localhost:3003';
+      document.getElementById('review-list').innerHTML = `
+        <div class="empty-state">
+          <i class="ti ti-wifi-off"></i>
+          <p>Could not connect to review-service</p>
+        </div>`;
+    }
+  }
+
+  function setFeatured(review) {
+    document.getElementById('feat-title').textContent = `Review #${review.id}`;
+    document.getElementById('feat-meta').textContent = `User ${review.userId} · Movie ${review.movieId}`;
+    document.getElementById('feat-text').textContent = review.reviewText || 'No review text.';
+    document.getElementById('feat-rating').textContent = review.rating;
+  }
+
+  function updateStats(reviews) {
+    document.getElementById('stat-total').textContent = reviews.length;
+    if (reviews.length === 0) return;
+    const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+    document.getElementById('stat-avg').textContent = avg.toFixed(1) + ' ★';
+    const top = Math.max(...reviews.map(r => r.rating));
+    document.getElementById('stat-top').textContent = top + ' ★';
+  }
+
+  function starsHtml(rating) {
+    let s = '';
+    for (let i = 1; i <= 5; i++) {
+      s += `<span class="star ${i <= rating ? 'filled' : 'empty'}">★</span>`;
+    }
+    return s;
+  }
+
+  function renderReviews(reviews) {
+    const list = document.getElementById('review-list');
+    document.getElementById('review-count').textContent = reviews.length + ' review' + (reviews.length !== 1 ? 's' : '');
+
+    if (reviews.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <i class="ti ti-database-off"></i>
+          <p>No reviews found</p>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = reviews.map(r => `
+      <div class="review-card" id="card-${r.id}" onclick="setFeatured(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+        <div class="review-card-header">
+          <div class="review-ids">
+            <span class="id-chip"><i class="ti ti-hash" style="font-size:10px;"></i> Review ${r.id}</span>
+            <span class="id-chip"><i class="ti ti-user" style="font-size:10px;"></i> User ${r.userId}</span>
+            <span class="id-chip"><i class="ti ti-movie" style="font-size:10px;"></i> Movie ${r.movieId}</span>
+          </div>
+          <div class="review-actions">
+            <button class="action-btn edit" title="Edit" onclick="event.stopPropagation(); toggleEdit(${r.id})">
+              <i class="ti ti-pencil"></i>
+            </button>
+            <button class="action-btn delete" title="Delete" onclick="event.stopPropagation(); deleteReview(${r.id})">
+              <i class="ti ti-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="stars-row">${starsHtml(r.rating)}</div>
+        <div class="review-text-preview">${r.reviewText}</div>
+
+        <!-- Inline Edit -->
+        <div class="inline-edit" id="edit-${r.id}">
+          <label>Rating</label>
+          <div class="star-picker" id="edit-stars-${r.id}">
+            ${[1,2,3,4,5].map(n =>
+              `<button class="star-pick ${n <= r.rating ? 'on' : ''}" onclick="event.stopPropagation(); pickEditStar(${r.id}, ${n})">★</button>`
+            ).join('')}
+          </div>
+          <input type="hidden" id="edit-rating-${r.id}" value="${r.rating}" />
+          <label style="margin-top:10px;">Review Text</label>
+          <textarea id="edit-text-${r.id}" onclick="event.stopPropagation()">${r.reviewText}</textarea>
+          <div class="inline-btns">
+            <button class="btn-save" onclick="event.stopPropagation(); saveEdit(${r.id})">Save</button>
+            <button class="btn-cancel" onclick="event.stopPropagation(); toggleEdit(${r.id})">Cancel</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterReviews() {
+  const q = document.getElementById('search-input').value.trim();
+  // kalau search kosong, tampilkan semua review
+  if (q === '') {
+    renderReviews(allReviews);
+    return;
+  }
+  const userId = Number(q);
+  const filtered = allReviews.filter(r =>
+    r.userId === userId
+  );
+  renderReviews(filtered);
+}
+
+  // ── STAR PICKER (Add form) ──
+  function pickStar(val) {
+    selectedRating = val;
+    document.getElementById('f-rating').value = val;
+    document.querySelectorAll('#star-picker .star-pick').forEach(btn => {
+      btn.classList.toggle('on', Number(btn.dataset.val) <= val);
+    });
+  }
+
+  // ── STAR PICKER (Edit inline) ──
+  function pickEditStar(id, val) {
+    document.getElementById(`edit-rating-${id}`).value = val;
+    document.querySelectorAll(`#edit-stars-${id} .star-pick`).forEach((btn, i) => {
+      btn.classList.toggle('on', i + 1 <= val);
+    });
+  }
+
+  // ── ADD ──
+  async function addReview() {
+    const userId = parseInt(document.getElementById('f-userid').value);
+    const movieId = parseInt(document.getElementById('f-movieid').value);
+    const rating = parseInt(document.getElementById('f-rating').value);
+    const reviewText = document.getElementById('f-text').value.trim();
+
+    if (!userId) { showToast('User ID is required!', 'error'); return; }
+    if (!movieId) { showToast('Movie ID is required!', 'error'); return; }
+    if (!rating) { showToast('Please pick a rating!', 'error'); return; }
+    if (!reviewText) { showToast('Review text is required!', 'error'); return; }
+
+    try {
+      const data = await gql(`
+        mutation($userId:Int! $movieId:Int! $rating:Int! $reviewText:String!) {
+          addReview(userId:$userId movieId:$movieId rating:$rating reviewText:$reviewText) {
+            id userId movieId rating reviewText
+          }
+        }
+      `, { userId, movieId, rating, reviewText });
+
+      if (data.errors) { showToast(data.errors[0].message, 'error'); return; }
+
+      const newReview = data.data.addReview;
+      allReviews.unshift(newReview);
+      renderReviews(allReviews);
+      updateStats(allReviews);
+      setFeatured(newReview);
+
+      document.getElementById('f-userid').value = '';
+      document.getElementById('f-movieid').value = '';
+      document.getElementById('f-text').value = '';
+      document.getElementById('f-rating').value = '';
+      selectedRating = 0;
+      document.querySelectorAll('#star-picker .star-pick').forEach(b => b.classList.remove('on'));
+      showToast('Review added!', 'success');
+    } catch (e) {
+      showToast('Failed to connect to service.', 'error');
+    }
+  }
+
+  // ── EDIT ──
+  function toggleEdit(id) {
+    const card = document.getElementById(`card-${id}`);
+    const editBox = document.getElementById(`edit-${id}`);
+    const isOpen = editBox.classList.contains('open');
+    // close all
+    document.querySelectorAll('.inline-edit.open').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.review-card.editing').forEach(el => el.classList.remove('editing'));
+    if (!isOpen) {
+      editBox.classList.add('open');
+      card.classList.add('editing');
+    }
+  }
+
+  async function saveEdit(id) {
+    const rating = parseInt(document.getElementById(`edit-rating-${id}`).value);
+    const reviewText = document.getElementById(`edit-text-${id}`).value.trim();
+
+    if (!rating) { showToast('Pick a rating!', 'error'); return; }
+    if (!reviewText) { showToast('Review text is required!', 'error'); return; }
+
+    try {
+      const data = await gql(`
+        mutation($id:Int! $rating:Int $reviewText:String) {
+          updateReview(id:$id rating:$rating reviewText:$reviewText) {
+            id userId movieId rating reviewText
+          }
+        }
+      `, { id, rating, reviewText });
+
+      if (data.errors) { showToast(data.errors[0].message, 'error'); return; }
+
+      const updated = data.data.updateReview;
+      allReviews = allReviews.map(r => r.id == id ? updated : r);
+      renderReviews(allReviews);
+      updateStats(allReviews);
+      setFeatured(updated);
+      showToast('Review updated!', 'success');
+    } catch (e) {
+      showToast('Failed to update.', 'error');
+    }
+  }
+
+  // ── DELETE ──
+  async function deleteReview(id) {
+    if (!confirm('Delete review #' + id + '?')) return;
+    try {
+      const data = await gql(`mutation($id:Int!) { deleteReview(id:$id) }`, { id });
+      if (data.errors) { showToast(data.errors[0].message, 'error'); return; }
+      allReviews = allReviews.filter(r => r.id != id);
+      renderReviews(allReviews);
+      updateStats(allReviews);
+      if (allReviews.length > 0) setFeatured(allReviews[0]);
+      else {
+        document.getElementById('feat-title').textContent = 'No reviews yet';
+        document.getElementById('feat-text').textContent = 'Add the first review using the form.';
+        document.getElementById('feat-rating').textContent = '—';
+      }
+      showToast('Review deleted.', 'success');
+    } catch (e) {
+      showToast('Failed to delete.', 'error');
+    }
+  }
+
+  function showToast(msg, type) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type;
+    setTimeout(() => el.className = 'toast', 3000);
+  }
+
+  loadReviews();
+</script>
+
 </body>
 </html>
