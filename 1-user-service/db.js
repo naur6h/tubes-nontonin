@@ -11,15 +11,23 @@ const db = mysql.createPool({
   queueLimit: 0
 });
 
-// Test koneksi
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error('Database connection failed:', err);
-    return;
-  }
+function connectWithRetry(retries = 10, delay = 3000) {
+  db.getConnection((err, connection) => {
+    if (err) {
+      console.error(`Database connection failed (retries left: ${retries}):`, err.message);
+      if (retries > 0) {
+        setTimeout(() => connectWithRetry(retries - 1, delay), delay);
+      } else {
+        console.error('Could not connect to database. Exiting.');
+        process.exit(1);
+      }
+      return;
+    }
+    console.log('MySQL Pool Connected');
+    connection.release();
+  });
+}
 
-  console.log('MySQL Pool Connected');
-  connection.release();
-});
+connectWithRetry();
 
 module.exports = db;
