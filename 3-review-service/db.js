@@ -1,20 +1,34 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD ||'',
-    database: process.env.DB_NAME ||'nontonin_review'
+const db = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'nontonin_review',
+  port: process.env.DB_PORT || 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-db.connect((err) => {
+function connectWithRetry(retries = 10, delay = 3000) {
+  db.getConnection((err, connection) => {
     if (err) {
-        console.error('Database connection failed:', err);
-        return;
+      console.error(`Database connection failed (retries left: ${retries}):`, err.message);
+      if (retries > 0) {
+        setTimeout(() => connectWithRetry(retries - 1, delay), delay);
+      } else {
+        console.error('Could not connect to database. Exiting.');
+        process.exit(1);
+      }
+      return;
     }
-
     console.log('MySQL Connected');
-});
+    connection.release();
+  });
+}
+
+connectWithRetry();
 
 module.exports = db;
