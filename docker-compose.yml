@@ -1,16 +1,47 @@
 services:
-
-  mysql-db:
+  mysql-user:
     image: mysql:8.0
-    container_name: nontonin-mysql
-    restart: always
+    container_name: nontonin-mysql-user
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nontonin_user
     ports:
       - "3307:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_user_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mysql-movie:
+    image: mysql:8.0
+    container_name: nontonin-mysql-movie
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nontonin_movies
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_movie_data:/var/lib/mysql
+      - ./2-movie-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mysql-review:
+    image: mysql:8.0
+    container_name: nontonin-mysql-review
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nontonin_review
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_review_data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
@@ -25,13 +56,13 @@ services:
       - "3001:3001"
     environment:
       PORT: 3001
-      DB_HOST: mysql-db
+      DB_HOST: mysql-user
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: root
-      DB_NAME: nontonin
+      DB_NAME: nontonin_user
     depends_on:
-      mysql-db:
+      mysql-user:
         condition: service_healthy
 
   movie-service:
@@ -42,13 +73,13 @@ services:
       - "3002:3002"
     environment:
       PORT: 3002
-      DB_HOST: mysql-db
+      DB_HOST: mysql-movie
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: nontonin_movies
     depends_on:
-      mysql-db:
+      mysql-movie:
         condition: service_healthy
 
   review-service:
@@ -59,14 +90,16 @@ services:
       - "3003:3003"
     environment:
       PORT: 3003
-      DB_HOST: mysql-db
+      DB_HOST: mysql-review
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: root
       DB_NAME: nontonin_review
     depends_on:
-      mysql-db:
+      mysql-review:
         condition: service_healthy
 
 volumes:
-  mysql_data:
+  mysql_user_data:
+  mysql_movie_data:
+  mysql_review_data:
