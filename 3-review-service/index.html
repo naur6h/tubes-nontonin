@@ -631,7 +631,7 @@
   <!-- RIGHT BAR -->
   <aside class="rightbar">
     <div class="search-wrap">
-      <input type="text" placeholder="Search by user ID..." id="search-input" oninput="filterReviews()" />
+      <input type="text" placeholder="Search by movie or user ID..." id="search-input" oninput="filterReviews()" />
       <i class="ti ti-search"></i>
     </div>
 
@@ -670,12 +670,16 @@
 </div>
 
 <script>
-  const GQL = 'http://localhost:3003/graphql';
+  const GQL        = 'http://localhost:3003/graphql';
+  const GQL_USER   = 'http://localhost:3001/graphql';
+  const GQL_MOVIE  = 'http://localhost:3002/graphql';
   let allReviews = [];
   let selectedRating = 0;
+  let userMap  = {};   // { id: name }
+  let movieMap = {};   // { id: title }
 
-  async function gql(query, variables = {}) {
-    const res = await fetch(GQL, {
+  async function gql(url, query, variables = {}) {
+    const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, variables })
@@ -683,9 +687,24 @@
     return res.json();
   }
 
-  async function loadReviews() {
+  async function loadMaps() {
     try {
-      const data = await gql(`{
+      const ud = await gql(GQL_USER, `{ users { id username } }`);
+      (ud.data?.users || []).forEach(u => { userMap[u.id] = u.username; });
+    } catch(e) { console.warn('user-service offline'); }
+    try {
+      const md = await gql(GQL_MOVIE, `{ movies { id title } }`);
+      (md.data?.movies || []).forEach(m => { movieMap[m.id] = m.title; });
+    } catch(e) { console.warn('movie-service offline'); }
+  }
+
+  function userName(id)  { return userMap[id]  || `User ${id}`; }
+  function movieName(id) { return movieMap[id] || `Movie ${id}`; }
+
+  async function loadReviews() {
+    await loadMaps();
+    try {
+      const data = await gql(GQL, `{
         getReview {
           id userId movieId rating reviewText
         }
@@ -711,8 +730,8 @@
   }
 
   function setFeatured(review) {
-    document.getElementById('feat-title').textContent = `Review #${review.id}`;
-    document.getElementById('feat-meta').textContent = `User ${review.userId} · Movie ${review.movieId}`;
+    document.getElementById('feat-title').textContent = movieName(review.movieId);
+    document.getElementById('feat-meta').textContent = `${userName(review.userId)} · Review #${review.id}`;
     document.getElementById('feat-text').textContent = review.reviewText || 'No review text.';
     document.getElementById('feat-rating').textContent = review.rating;
   }
@@ -752,8 +771,8 @@
         <div class="review-card-header">
           <div class="review-ids">
             <span class="id-chip"><i class="ti ti-hash" style="font-size:10px;"></i> Review ${r.id}</span>
-            <span class="id-chip"><i class="ti ti-user" style="font-size:10px;"></i> User ${r.userId}</span>
-            <span class="id-chip"><i class="ti ti-movie" style="font-size:10px;"></i> Movie ${r.movieId}</span>
+            <span class="id-chip"><i class="ti ti-user" style="font-size:10px;"></i> ${userName(r.userId)}</span>
+            <span class="id-chip"><i class="ti ti-movie" style="font-size:10px;"></i> ${movieName(r.movieId)}</span>
           </div>
           <div class="review-actions">
             <button class="action-btn edit" title="Edit" onclick="event.stopPropagation(); toggleEdit(${r.id})">
@@ -788,18 +807,15 @@
   }
 
   function filterReviews() {
-  const q = document.getElementById('search-input').value.trim();
-  // kalau search kosong, tampilkan semua review
-  if (q === '') {
-    renderReviews(allReviews);
-    return;
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const filtered = allReviews.filter(r =>
+      String(r.movieId).includes(q) ||
+      String(r.userId).includes(q) ||
+      String(r.id).includes(q) ||
+      r.reviewText.toLowerCase().includes(q)
+    );
+    renderReviews(filtered);
   }
-  const userId = Number(q);
-  const filtered = allReviews.filter(r =>
-    r.userId === userId
-  );
-  renderReviews(filtered);
-}
 
   // ── STAR PICKER (Add form) ──
   function pickStar(val) {
@@ -831,7 +847,7 @@
     if (!reviewText) { showToast('Review text is required!', 'error'); return; }
 
     try {
-      const data = await gql(`
+      const data = await gql(GQL, `
         mutation($userId:Int! $movieId:Int! $rating:Int! $reviewText:String!) {
           addReview(userId:$userId movieId:$movieId rating:$rating reviewText:$reviewText) {
             id userId movieId rating reviewText
@@ -881,7 +897,7 @@
     if (!reviewText) { showToast('Review text is required!', 'error'); return; }
 
     try {
-      const data = await gql(`
+      const data = await gql(GQL, `
         mutation($id:Int! $rating:Int $reviewText:String) {
           updateReview(id:$id rating:$rating reviewText:$reviewText) {
             id userId movieId rating reviewText
@@ -906,7 +922,7 @@
   async function deleteReview(id) {
     if (!confirm('Delete review #' + id + '?')) return;
     try {
-      const data = await gql(`mutation($id:Int!) { deleteReview(id:$id) }`, { id });
+      const data = await gql(GQL, `mutation($id:Int!) { deleteReview(id:$id) }`, { id });
       if (data.errors) { showToast(data.errors[0].message, 'error'); return; }
       allReviews = allReviews.filter(r => r.id != id);
       renderReviews(allReviews);
