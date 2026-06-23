@@ -43,7 +43,6 @@
       min-height: 100vh;
     }
 
-    /* ── SIDEBAR ── */
     .sidebar {
       background: var(--white);
       border-right: 1px solid var(--pink-200);
@@ -80,9 +79,7 @@
       color: var(--pink-600);
     }
 
-    .nav-section {
-      padding: 0 12px 20px;
-    }
+    .nav-section { padding: 0 12px 20px; }
 
     .nav-label {
       font-size: 10px;
@@ -111,7 +108,6 @@
     .nav-item.active { background: var(--pink-100); color: var(--pink-600); font-weight: 500; }
     .nav-item i { font-size: 17px; }
 
-    /* ── MAIN ── */
     .main {
       padding: 28px 28px 48px;
       overflow-y: auto;
@@ -127,7 +123,6 @@
     .page-title { font-size: 20px; font-weight: 600; }
     .page-sub { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
 
-    /* featured */
     .featured {
       background: var(--white);
       border-radius: var(--radius-lg);
@@ -189,7 +184,6 @@
       font-size: 44px;
     }
 
-    /* movie grid */
     .section-header {
       display: flex;
       align-items: center;
@@ -260,7 +254,14 @@
 
     .movie-year { font-size: 11px; color: var(--gray-500); }
 
-    .delete-btn {
+    .movie-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .delete-btn,
+    .edit-btn {
       background: none;
       border: none;
       color: var(--gray-300);
@@ -272,6 +273,57 @@
     }
 
     .delete-btn:hover { color: #E24B4A; background: #FFEBEE; }
+    .edit-btn:hover { color: var(--pink-600); background: var(--pink-100); }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 32, 40, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      width: 360px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(44, 32, 40, 0.18);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--pink-800);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-500);
+      font-size: 18px;
+      padding: 2px;
+      border-radius: 4px;
+      transition: color 0.15s;
+    }
+
+    .modal-close:hover { color: var(--gray-900); }
 
     .empty-state {
       grid-column: 1 / -1;
@@ -280,10 +332,15 @@
       color: var(--gray-500);
     }
 
-    .empty-state i { font-size: 40px; display: block; margin-bottom: 10px; color: var(--pink-200); }
+    .empty-state i {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 10px;
+      color: var(--pink-200);
+    }
+
     .empty-state p { font-size: 14px; }
 
-    /* ── RIGHT SIDEBAR ── */
     .rightbar {
       background: var(--white);
       border-left: 1px solid var(--pink-200);
@@ -309,8 +366,20 @@
       transition: border-color 0.15s;
     }
 
-    .search-wrap input:focus { border-color: var(--pink-400); background: var(--white); }
-    .search-wrap i { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--pink-400); font-size: 16px; pointer-events: none; }
+    .search-wrap input:focus {
+      border-color: var(--pink-400);
+      background: var(--white);
+    }
+
+    .search-wrap i {
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--pink-400);
+      font-size: 16px;
+      pointer-events: none;
+    }
 
     .form-box {
       background: var(--pink-50);
@@ -358,7 +427,11 @@
     .form-group input:focus,
     .form-group textarea:focus { border-color: var(--pink-400); }
 
-    .form-group textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 72px;
+      line-height: 1.5;
+    }
 
     .btn-submit {
       width: 100%;
@@ -378,6 +451,23 @@
     .btn-submit:hover { background: var(--pink-600); }
     .btn-submit:active { transform: scale(0.98); }
 
+    .btn-secondary {
+      width: 100%;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s;
+    }
+
+    .btn-secondary:hover { background: var(--gray-300); }
+
     .toast {
       margin-top: 12px;
       font-size: 12px;
@@ -393,19 +483,20 @@
 <body>
 
 <div class="app">
-
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo">
       <div class="logo-icon"><i class="ti ti-movie"></i></div>
       <span class="logo-name">Nontonin</span>
     </div>
+
     <div class="nav-section">
       <div class="nav-label">Menu</div>
       <a class="nav-item active" href="index.html"><i class="ti ti-home"></i> Discover</a>
       <a class="nav-item" href="#"><i class="ti ti-trending-up"></i> Trending</a>
       <a class="nav-item" href="#"><i class="ti ti-category"></i> Genre</a>
     </div>
+
     <div class="nav-section">
       <div class="nav-label">Services</div>
       <a class="nav-item" href="../1-user-service/index.html"><i class="ti ti-user"></i> Users</a>
@@ -423,7 +514,6 @@
       </div>
     </div>
 
-    <!-- Featured -->
     <div class="featured" id="featured-card">
       <div>
         <div class="featured-badge"><i class="ti ti-star-filled" style="font-size:11px;"></i> Featured</div>
@@ -434,11 +524,11 @@
       <div class="featured-poster"><i class="ti ti-movie"></i></div>
     </div>
 
-    <!-- Grid -->
     <div class="section-header">
       <span class="section-title">All Movies</span>
       <span class="movie-count" id="movie-count">0 movies</span>
     </div>
+
     <div class="movie-grid" id="movie-grid">
       <div class="empty-state">
         <i class="ti ti-loader"></i>
@@ -486,7 +576,48 @@
       <div class="toast" id="toast"></div>
     </div>
   </aside>
+</div>
 
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Edit Movie</div>
+      <button class="modal-close" onclick="closeEditModal()" aria-label="Close edit modal">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+
+    <input type="hidden" id="edit-id" />
+
+    <div class="form-group">
+      <label>Title *</label>
+      <input type="text" id="edit-title" />
+    </div>
+    <div class="form-group">
+      <label>Genre</label>
+      <input type="text" id="edit-genre" />
+    </div>
+    <div class="form-group">
+      <label>Director</label>
+      <input type="text" id="edit-director" />
+    </div>
+    <div class="form-group">
+      <label>Release Year</label>
+      <input type="number" id="edit-year" min="1900" max="2099" />
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="edit-desc"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Poster URL</label>
+      <input type="text" id="edit-poster" />
+    </div>
+
+    <button class="btn-submit" onclick="updateMovie()">Save Changes</button>
+    <button class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+  </div>
 </div>
 
 <script>
@@ -502,6 +633,14 @@
     return res.json();
   }
 
+  function escapeSingleQuote(text) {
+    return String(text || '').replace(/'/g, "\\'");
+  }
+
+  function safeJson(obj) {
+    return JSON.stringify(obj).replace(/'/g, "&#39;");
+  }
+
   async function loadMovies() {
     try {
       const data = await gql(`{
@@ -509,15 +648,26 @@
           id title genre director release_year description poster_url
         }
       }`);
+
+      if (data.errors) {
+        document.getElementById('feat-title').textContent = 'GraphQL error';
+        document.getElementById('feat-desc').textContent = data.errors[0].message;
+        return;
+      }
+
       allMovies = data.data?.movies || [];
       renderMovies(allMovies);
-      if (allMovies.length > 0) setFeatured(allMovies[0]);
-      else {
+
+      if (allMovies.length > 0) {
+        setFeatured(allMovies[0]);
+      } else {
         document.getElementById('feat-title').textContent = 'No movies yet';
+        document.getElementById('feat-meta').textContent = '';
         document.getElementById('feat-desc').textContent = 'Add the first movie using the form on the right.';
       }
     } catch (e) {
       document.getElementById('feat-title').textContent = 'Service offline';
+      document.getElementById('feat-meta').textContent = '';
       document.getElementById('feat-desc').textContent = 'Make sure movie-service is running at localhost:3002';
       document.getElementById('movie-grid').innerHTML = `
         <div class="empty-state">
@@ -528,7 +678,7 @@
   }
 
   function setFeatured(movie) {
-    document.getElementById('feat-title').textContent = movie.title;
+    document.getElementById('feat-title').textContent = movie.title || 'Untitled';
     document.getElementById('feat-meta').textContent = [movie.director, movie.genre, movie.release_year].filter(Boolean).join(' · ');
     document.getElementById('feat-desc').textContent = movie.description || 'No description available.';
   }
@@ -547,7 +697,7 @@
     }
 
     grid.innerHTML = movies.map(m => `
-      <div class="movie-card" onclick='setFeatured(${JSON.stringify(m)})'>
+      <div class="movie-card" onclick='setFeatured(${safeJson(m)})'>
         <div class="movie-poster">
           ${m.poster_url
             ? `<img src="${m.poster_url}" alt="${m.title}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<i class=\\'ti ti-movie\\'></i>'" />`
@@ -555,13 +705,18 @@
           }
         </div>
         <div class="movie-info">
-          <div class="movie-title" title="${m.title}">${m.title}</div>
+          <div class="movie-title" title="${m.title || ''}">${m.title || 'Untitled'}</div>
           <div class="movie-genre">${m.genre || '—'}</div>
           <div class="movie-footer">
             <span class="movie-year">${m.release_year || ''}</span>
-            <button class="delete-btn" onclick="event.stopPropagation(); deleteMovie(${m.id}, '${m.title.replace(/'/g, "\\'")}')" aria-label="Delete ${m.title}">
-              <i class="ti ti-trash"></i>
-            </button>
+            <div class="movie-actions">
+              <button class="edit-btn" onclick="event.stopPropagation(); openEditMovie(${m.id})" aria-label="Edit ${m.title || 'movie'}">
+                <i class="ti ti-edit"></i>
+              </button>
+              <button class="delete-btn" onclick="event.stopPropagation(); deleteMovie(${m.id}, '${escapeSingleQuote(m.title)}')" aria-label="Delete ${m.title || 'movie'}">
+                <i class="ti ti-trash"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -571,7 +726,7 @@
   function filterMovies() {
     const q = document.getElementById('search-input').value.toLowerCase();
     const filtered = allMovies.filter(m =>
-      m.title.toLowerCase().includes(q) ||
+      (m.title || '').toLowerCase().includes(q) ||
       (m.genre || '').toLowerCase().includes(q) ||
       (m.director || '').toLowerCase().includes(q)
     );
@@ -580,7 +735,10 @@
 
   async function addMovie() {
     const title = document.getElementById('f-title').value.trim();
-    if (!title) { showToast('Title is required!', 'error'); return; }
+    if (!title) {
+      showToast('Title is required!', 'error');
+      return;
+    }
 
     const genre = document.getElementById('f-genre').value.trim() || null;
     const director = document.getElementById('f-director').value.trim() || null;
@@ -597,7 +755,10 @@
         }
       `, { title, description, genre, release_year, director, poster_url });
 
-      if (data.errors) { showToast(data.errors[0].message, 'error'); return; }
+      if (data.errors) {
+        showToast(data.errors[0].message, 'error');
+        return;
+      }
 
       const newMovie = data.data.addMovie;
       allMovies.unshift(newMovie);
@@ -607,24 +768,99 @@
       ['f-title','f-genre','f-director','f-year','f-desc','f-poster'].forEach(id => {
         document.getElementById(id).value = '';
       });
+
       showToast('Movie added!', 'success');
     } catch (e) {
       showToast('Failed to connect to service.', 'error');
     }
   }
 
+  function openEditMovie(id) {
+    const movie = allMovies.find(m => m.id == id);
+    if (!movie) {
+      showToast('Movie not found.', 'error');
+      return;
+    }
+
+    document.getElementById('edit-id').value = movie.id;
+    document.getElementById('edit-title').value = movie.title || '';
+    document.getElementById('edit-genre').value = movie.genre || '';
+    document.getElementById('edit-director').value = movie.director || '';
+    document.getElementById('edit-year').value = movie.release_year || '';
+    document.getElementById('edit-desc').value = movie.description || '';
+    document.getElementById('edit-poster').value = movie.poster_url || '';
+
+    document.getElementById('edit-modal').classList.add('open');
+  }
+
+  function closeEditModal() {
+    document.getElementById('edit-modal').classList.remove('open');
+  }
+
+  async function updateMovie() {
+    const id = document.getElementById('edit-id').value;
+    const title = document.getElementById('edit-title').value.trim();
+
+    if (!title) {
+      showToast('Title is required!', 'error');
+      return;
+    }
+
+    const genre = document.getElementById('edit-genre').value.trim() || null;
+    const director = document.getElementById('edit-director').value.trim() || null;
+    const release_year = parseInt(document.getElementById('edit-year').value) || null;
+    const description = document.getElementById('edit-desc').value.trim() || null;
+    const poster_url = document.getElementById('edit-poster').value.trim() || null;
+
+    try {
+      const data = await gql(`
+        mutation($id:ID! $title:String! $description:String $genre:String $release_year:Int $director:String $poster_url:String) {
+          updateMovie(id:$id title:$title description:$description genre:$genre release_year:$release_year director:$director poster_url:$poster_url) {
+            id title genre director release_year description poster_url
+          }
+        }
+      `, { id: String(id), title, description, genre, release_year, director, poster_url });
+
+      if (data.errors) {
+        showToast(data.errors[0].message, 'error');
+        return;
+      }
+
+      const updatedMovie = data.data.updateMovie;
+      allMovies = allMovies.map(m => m.id == id ? updatedMovie : m);
+
+      renderMovies(allMovies);
+      setFeatured(updatedMovie);
+      closeEditModal();
+
+      showToast('Movie updated!', 'success');
+    } catch (e) {
+      showToast('Failed to update movie.', 'error');
+    }
+  }
+
   async function deleteMovie(id, title) {
     if (!confirm('Delete "' + title + '"?')) return;
+
     try {
       const data = await gql(`mutation($id:ID!) { deleteMovie(id:$id) }`, { id: String(id) });
-      if (data.errors) { showToast(data.errors[0].message, 'error'); return; }
+
+      if (data.errors) {
+        showToast(data.errors[0].message, 'error');
+        return;
+      }
+
       allMovies = allMovies.filter(m => m.id != id);
       renderMovies(allMovies);
-      if (allMovies.length > 0) setFeatured(allMovies[0]);
-      else {
+
+      if (allMovies.length > 0) {
+        setFeatured(allMovies[0]);
+      } else {
         document.getElementById('feat-title').textContent = 'No movies yet';
+        document.getElementById('feat-meta').textContent = '';
         document.getElementById('feat-desc').textContent = 'Add the first movie using the form.';
       }
+
       showToast('Movie deleted.', 'success');
     } catch (e) {
       showToast('Failed to delete.', 'error');
@@ -637,6 +873,10 @@
     el.className = 'toast ' + type;
     setTimeout(() => el.className = 'toast', 3000);
   }
+
+  document.getElementById('edit-modal').addEventListener('click', function(e) {
+    if (e.target.id === 'edit-modal') closeEditModal();
+  });
 
   loadMovies();
 </script>
