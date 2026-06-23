@@ -1,7 +1,9 @@
 services:
+
   mysql-user:
     image: mysql:8.0
     container_name: nontonin-mysql-user
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: nontonin_user
@@ -9,6 +11,7 @@ services:
       - "3307:3306"
     volumes:
       - mysql_user_data:/var/lib/mysql
+      - ./init/init-user.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
@@ -18,6 +21,7 @@ services:
   mysql-movie:
     image: mysql:8.0
     container_name: nontonin-mysql-movie
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: nontonin_movies
@@ -25,7 +29,7 @@ services:
       - "3308:3306"
     volumes:
       - mysql_movie_data:/var/lib/mysql
-      - ./2-movie-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init/init-movie.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
@@ -35,6 +39,7 @@ services:
   mysql-review:
     image: mysql:8.0
     container_name: nontonin-mysql-review
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: nontonin_review
@@ -42,11 +47,14 @@ services:
       - "3309:3306"
     volumes:
       - mysql_review_data:/var/lib/mysql
+      - ./init/init-review.sql:/docker-entrypoint-initdb.d/init.sql 
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 10
+
+  # ==================== SERVICES ====================
 
   user-service:
     build: ./1-user-service
