@@ -15,7 +15,7 @@ const db = mysql.createPool({
 function connectWithRetry(retries = 10, delay = 3000) {
   db.getConnection((err, connection) => {
     if (err) {
-      console.error(`DB Error (retries left: ${retries}):`, err.message);
+      console.error(`Database connection failed (retries left: ${retries}):`, err.message);
       if (retries > 0) {
         setTimeout(() => connectWithRetry(retries - 1, delay), delay);
       } else {
