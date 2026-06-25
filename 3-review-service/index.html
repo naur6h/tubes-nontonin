@@ -631,7 +631,7 @@
   <!-- RIGHT BAR -->
   <aside class="rightbar">
     <div class="search-wrap">
-      <input type="text" placeholder="Search by movie or user ID..." id="search-input" oninput="filterReviews()" />
+      <input type="text" placeholder="Search by user ID..." id="search-input" oninput="filterReviews()" />
       <i class="ti ti-search"></i>
     </div>
 
@@ -809,10 +809,7 @@
   function filterReviews() {
     const q = document.getElementById('search-input').value.toLowerCase();
     const filtered = allReviews.filter(r =>
-      String(r.movieId).includes(q) ||
-      String(r.userId).includes(q) ||
-      String(r.id).includes(q) ||
-      r.reviewText.toLowerCase().includes(q)
+      String(r.userId).includes(q)
     );
     renderReviews(filtered);
   }
