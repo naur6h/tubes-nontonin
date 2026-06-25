@@ -10,8 +10,8 @@ services:
     ports:
       - "3307:3306"
     volumes:
-      - mysql_user_data:/var/lib/mysql
-      - ./1-user-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    - mysql_user_data:/var/lib/mysql
+    - ./1-user-service/init-user.sql:/docker-entrypoint-initdb.d/init.sql 
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
@@ -28,8 +28,8 @@ services:
     ports:
       - "3308:3306"
     volumes:
-      - mysql_movie_data:/var/lib/mysql
-      - ./2-movie-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    - mysql_movie_data:/var/lib/mysql
+    - ./2-movie-service/init-movie.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
@@ -46,8 +46,8 @@ services:
     ports:
       - "3309:3306"
     volumes:
-      - mysql_review_data:/var/lib/mysql
-      - ./3-review-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+    - mysql_review_data:/var/lib/mysql
+    - ./3-review-service/init-review.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
